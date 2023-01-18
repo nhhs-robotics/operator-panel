@@ -19,3 +19,4 @@ https://learn.adafruit.com/custom-hid-devices-in-circuitpython
 https://learn.adafruit.com/customizing-usb-devices-in-circuitpython/overview
 
 
+https://learn.adafruit.com/raspberry-pi-pico-led-arcade-button-midi-controller-fighter
