@@ -42,11 +42,15 @@ class Gamepad:
         # report[3] joystick 0 y: -127 to 127
         # report[4] joystick 1 x: -127 to 127
         # report[5] joystick 1 y: -127 to 127
-        self._report = bytearray(6)
+        ## report[6] hat 0 
+        ## report[7] hat 1 
+        ## report[8] hat 2 
+        ## report[9] hat 3 
+        self._report = bytearray(10)
 
         # Remember the last report as well, so we can avoid sending
         # duplicate reports.
-        self._last_report = bytearray(6)
+        self._last_report = bytearray(10)
 
         # Store settings separately before putting into report. Saves code
         # especially for buttons.
@@ -55,6 +59,10 @@ class Gamepad:
         self._joy_y = 0
         self._joy_z = 0
         self._joy_r_z = 0
+        self._hat_0 = 0
+        self._hat_1 = 0
+        self._hat_2 = 0
+        self._hat_3 = 0
 
         # Send an initial report to test if HID device is ready.
         # If not, wait a bit and try once more.
@@ -115,6 +123,23 @@ class Gamepad:
             self._joy_r_z = self._validate_joystick_value(r_z)
         self._send()
 
+
+    def move_hat(self, dir):
+        self._hat_0 = 0
+        self._hat_1 = 0
+        self._hat_2 = 0
+        self._hat_3 = 0
+
+        if dir=="top":
+            self._hat_0 = 1
+        elif dir=="right":
+            self._hat_1 = 1
+        elif dir=="bottom":
+            self._hat_2 = 1
+        elif dir=="right":
+            self._hat_3 = 1
+
+
     def reset_all(self):
         """Release all buttons and set joysticks to zero."""
         self._buttons_state = 0
@@ -122,6 +147,10 @@ class Gamepad:
         self._joy_y = 0
         self._joy_z = 0
         self._joy_r_z = 0
+        self._hat_0 = 0
+        self._hat_1 = 0
+        self._hat_2 = 0
+        self._hat_3 = 0
         self._send(always=True)
 
     def _send(self, always=False):
@@ -129,7 +158,7 @@ class Gamepad:
         If ``always`` is ``False`` (the default), send only if there have been changes.
         """
         struct.pack_into(
-            "<Hbbbb",
+            "<Hbbbbbbbb",
             self._report,
             0,
             self._buttons_state,
@@ -137,6 +166,10 @@ class Gamepad:
             self._joy_y,
             self._joy_z,
             self._joy_r_z,
+            self._hat_0,
+            self._hat_1,
+            self._hat_2,
+            self._hat_3,
         )
 
         if always or self._last_report != self._report:
@@ -155,3 +188,5 @@ class Gamepad:
         if not -127 <= value <= 127:
             raise ValueError("Joystick value must be in range -127 to 127")
         return value
+
+    ## TODO: Validate hat value

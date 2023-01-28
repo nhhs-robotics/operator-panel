@@ -23,6 +23,14 @@ GAMEPAD_REPORT_DESCRIPTOR = bytes((
     0x09, 0x35,  #   Usage (Rz)
     0x75, 0x08,  #   Report Size (8)
     0x95, 0x04,  #   Report Count (4)
+    0x09, 0x39, # USAGE (Hat switch)
+    0x15, 0x00, # LOGICAL_MINIMUM(0)
+    0x25, 0x03, # LOGICAL_MAXIMUM(3)
+    0x35, 0x00, # PHYSICAL_MINIMUM(0)
+    0x46, 0x0E, 0x01, # PHYSICAL_MAXIMUM(270)
+    0x65, 0x14, # UNIT (Eng Rot:Angular Pos)
+    0x75, 0x04, # REPORT_SIZE(4)
+    0x95, 0x01, # REPORT_COUNT(1)
     0x81, 0x02,  #   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
     0xC0,        # End Collection
 ))
@@ -32,7 +40,7 @@ gamepad = usb_hid.Device(
     usage_page=0x01,           # Generic Desktop Control
     usage=0x05,                # Gamepad
     report_ids=(4,),           # Descriptor uses report ID 4.
-    in_report_lengths=(6,),    # This gamepad sends 6 bytes in its report.
+    in_report_lengths=(10,),    # This gamepad sends 6 bytes in its report.
     out_report_lengths=(0,),   # It does not receive any reports.
 )
 
