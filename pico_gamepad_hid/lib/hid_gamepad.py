@@ -46,11 +46,11 @@ class Gamepad:
         ## report[7] hat 1 
         ## report[8] hat 2 
         ## report[9] hat 3 
-        self._report = bytearray(10)
+        self._report = bytearray(7)
 
         # Remember the last report as well, so we can avoid sending
         # duplicate reports.
-        self._last_report = bytearray(10)
+        self._last_report = bytearray(7)
 
         # Store settings separately before putting into report. Saves code
         # especially for buttons.
@@ -95,6 +95,12 @@ class Gamepad:
         self.press_buttons(*buttons)
         self.release_buttons(*buttons)
 
+    def toggle_on(self, *toggles):
+        """Turn toggle switch on"""
+        for toggle in toggles: 
+            self._toggles_state |= 1 << self._validate_toggle_number(button) - 1
+        self._send()
+
     def move_joysticks(self, x=None, y=None, z=None, r_z=None):
         """Set and send the given joystick values.
         The joysticks will remain set with the given values until changed
@@ -131,13 +137,21 @@ class Gamepad:
         self._hat_3 = 0
 
         if dir=="top":
-            self._hat_0 = 1
+            # self._hat_0 = 1
+            self._hat_0 |= 1 << 8
         elif dir=="right":
-            self._hat_1 = 1
+            # self._hat_1 = 1
+            self._hat_0 |= 1 << 7
         elif dir=="bottom":
-            self._hat_2 = 1
+            # self._hat_2 = 1
+            self._hat_0 |= 1 << 6
         elif dir=="right":
-            self._hat_3 = 1
+            # self._hat_3 = 1
+            self._hat_0 |= 1 << 5
+
+        # for button in buttons:
+        #     self._buttons_state |= 1 << self._validate_button_number(button) - 1
+        # self._send()
 
 
     def reset_all(self):
@@ -158,7 +172,7 @@ class Gamepad:
         If ``always`` is ``False`` (the default), send only if there have been changes.
         """
         struct.pack_into(
-            "<Hbbbbbbbb",
+            "<Hbbbbb",
             self._report,
             0,
             self._buttons_state,
@@ -167,9 +181,9 @@ class Gamepad:
             self._joy_z,
             self._joy_r_z,
             self._hat_0,
-            self._hat_1,
-            self._hat_2,
-            self._hat_3,
+            # self._hat_1,
+            # self._hat_2,
+            # self._hat_3,
         )
 
         if always or self._last_report != self._report:
