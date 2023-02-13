@@ -106,7 +106,7 @@ class Gamepad:
     def toggle_on(self, *toggles):
         """Turn toggle switch on"""
         for toggle in toggles:
-            self._toggles_state |= 1 << self._validate_toggle_number(button) - 1
+            self._toggles_state |= 1 << self._validate_toggle_number(toggle) - 1
         self._send()
 
     def set_sliderX(self, val):
@@ -166,15 +166,25 @@ class Gamepad:
     def _pack_toggles_and_hat(self):
         ## TODO: Might need to reverse these
         packed_val = 0
-        packed_val |= self._toggles_state << 4
+        ## packed_val |= self._toggles_state << 4 ## Toggles are already packed!
         packed_val |= self._hat << 1
         return packed_val
+
+    def _debug_vals(self, packed_bits):
+        print("SliderX: " + str(self._slider_x))
+        print("SliderY: " + str(self._slider_y))
+        print("Buttons: " + str(self._buttons_state))
+        print("Toggles: " + str(self._toggles_state))
+        print("Hat: " + str(self._hat))
+        print("Packed Hat/Toggle: " + str(packed_bits))
 
     def _send(self, always=False):
         """Send a report with all the existing settings.
         If ``always`` is ``False`` (the default), send only if there have been changes.
         """
         packed_toggles_and_hat = self._pack_toggles_and_hat()
+
+        self._debug_vals(packed_toggles_and_hat)
 
         struct.pack_into(
             "<bbbb",  ## Little-endian, H: unsigned short (2 bytes), b: signed char (1 byte)
@@ -202,7 +212,7 @@ class Gamepad:
         return button
     
     @staticmethod 
-    def _validate_toggle_value(value): 
+    def _validate_toggle_number(value): 
         if not 1 <= value <= 4:
             raise ValueError("Toggle value must be in range 1 to 4")
         return value + 8
