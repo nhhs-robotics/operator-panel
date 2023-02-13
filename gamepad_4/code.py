@@ -80,37 +80,32 @@ def range_map(x, in_min, in_max, out_min, out_max):
 
 while True:
     # print("loop")
-    # Buttons are grounded when pressed (.value = False).
-#    for i, button in enumerate(buttons):
-#        gamepad_button_num = gamepad_buttons[i]
-#        if button.value:
-#            gp.release_buttons(gamepad_button_num)
-#            print(" release", gamepad_button_num, end="")
-#        else:
-#            gp.press_buttons(gamepad_button_num)
-#            print(" press", gamepad_button_num, end="")
-    if button1.value:
-        gp.release_buttons(1)
-        # print("release 1")
-    else:
-        gp.press_buttons(1)
-        print("press 1")
-    if button2.value:
-        gp.release_buttons(2)
-    else:
-        gp.press_buttons(2)
-        print("press 2")
+
+    gp.press_buttons(2)
+    print("Turn toggle1 on")
+    gp.toggle_on(1)
+    print("Turn toggle2 on")
+    gp.toggle_on(2)
+    print("Turn toggle3 on")
+    gp.toggle_on(3)
+    print("Turn toggle4 on")
+    gp.toggle_on(4)
+
+    print("Set sliderX")
+    gp.set_sliderX(85)
+    print("Set sliderY")
+    gp.set_sliderY(15)
+
+    print("Release button2")
+    gp.release_buttons(2)
+  
+    print("Set joystick North")
+    gp.set_analog_joystick(Gamepad.JOYSTICK_NORTH)
+    print("Set joystick NW")
+    gp.set_analog_joystick(Gamepad.JOYSTICK_NW)
+    print("Set joystick South")
+    gp.set_analog_joystick(Gamepad.JOYSTICK_SOUTH)
 
 
-    # Convert range[0, 65535] to -127 to 127
-    gp.move_joysticks(
-        x=range_map(ax.value, 0, 65535, -127, 127),
-        y=range_map(ay.value, 0, 65535, -127, 127),
-        z=range_map(slider.value, 0, 65535, -127, 127),
-        r_z=(joystick_down.value),
-    )
-    #print(" x", ax.value, "y", ay.value)
-    # print((ax.value, ay.value,slider.value))
-    # print(joystick_up.value)
-    time.sleep(0.5)
+    time.sleep(1)
 
