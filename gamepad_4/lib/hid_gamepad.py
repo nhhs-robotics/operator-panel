@@ -109,8 +109,14 @@ class Gamepad:
             self._toggles_state |= 1 << self._validate_toggle_number(button) - 1
         self._send()
 
+    def set_sliderX(self, val):
+        self.move_joysticks(x=val)
+
+    def set_sliderY(self, val):
+        self.move_joysticks(y=val)
+
     def move_joysticks(self, x=None, y=None, z=None, r_z=None):
-        """Set and send the given joystick values.
+        """Set and send the given (analog) joystick values.
         The joysticks will remain set with the given values until changed
 
         One joystick provides ``x`` and ``y`` values,
@@ -138,13 +144,12 @@ class Gamepad:
         self._send()
 
 
+    ## Helper method for backwards compat
+    def set_analog_joystick(self, dir):
+        self.move_hat(dir)
+
     def move_hat(self, dir):
-        ## Check the value
-
-        
-
-        # for button in buttons:
-        #     self._buttons_state &= ~(1 << self._validate_button_number(button) - 1)
+        self._validate_hat_value(dir)
         self._send()
 
 
@@ -159,6 +164,7 @@ class Gamepad:
         self._send(always=True)
 
     def _pack_toggles_and_hat(self):
+        ## TODO: Might need to reverse these
         packed_val = 0
         packed_val |= self._toggles_state << 4
         packed_val |= self._hat << 1
@@ -171,17 +177,13 @@ class Gamepad:
         packed_toggles_and_hat = self._pack_toggles_and_hat()
 
         struct.pack_into(
-            "<bbH",  ## Little-endian, H: unsigned short (2 bytes), b: signed char (1 byte)
+            "<bbbb",  ## Little-endian, H: unsigned short (2 bytes), b: signed char (1 byte)
             self._report, ## Pack into the _report var
             0, ## Offset = 0
-            100, ## Slider X
-            -90, ## Slider Y
-            self._buttons_state, ## Write the button state, little-endian (and grabs the hat for now too)
-
-            # self._hat_0,
-            # self._hat_1,
-            # self._hat_2,
-            # self._hat_3,
+            self._joy_x, ## Slider X
+            self._joy_y, ## Slider Y
+            self._buttons_state, ## Write the button state, little-endian
+            packed_toggles_and_hat,
         )
         print(self._report)
         print("sending report")
