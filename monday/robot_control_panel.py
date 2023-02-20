@@ -14,11 +14,6 @@ import time
 
 from hid_gamepad import Gamepad
 
-## Turn the indicator light on
-led = digitalio.DigitalInOut(board.LED)
-led.direction = digitalio.Direction.OUTPUT
-led.value = True
-
 gp = Gamepad(usb_hid.devices)
 
 # Create some buttons. The physical buttons are connected
@@ -42,7 +37,7 @@ toggle_pins = (board.GP10, board.GP11, board.GP12, board.GP13)
 # Map the toggles to toggle numbers on the Gamepad.
 # gamepad_toggles[i] will send that toggle number when toggles[i]
 # is pushed.
-toggles_switches = (1, 2, 3, 4)
+gamepad_toggles = (1, 2, 3, 4)
 
 toggles = [digitalio.DigitalInOut(pin) for pin in toggle_pins]
 for toggle in toggles:
@@ -105,7 +100,7 @@ def direction_map(up, down, left, right):
     return Gamepad.JOYSTICK_HOME
 
 
-def send_buttons: 
+def send_buttons(): 
     # Buttons are grounded when pressed (.value = False).
     for i, button in enumerate(buttons):
         gamepad_button_num = gamepad_buttons[i]
@@ -116,7 +111,7 @@ def send_buttons:
             gp.press_buttons(gamepad_button_num)
             print(" press", gamepad_button_num, end="")   
 
-def send_toggles: 
+def send_toggles(): 
     # Toggles are grounded when pressed (.value = False).
     for i, toggle in enumerate(toggles):
         gamepad_toggle_num = gamepad_toggles[i]
@@ -127,27 +122,32 @@ def send_toggles:
             gp.toggle_on(gamepad_toggle_num)
             print(" toggleOn: ", gamepad_toggle_num, end="")   
 
-def send_sliders:
+def send_sliders():
     # Convert range[0, 65535] to 0 to 255
     # gp.move_joysticks(
     #     x=range_map(ax.value, 0, 65535, -127, 127),
     #     y=range_map(ay.value, 0, 65535, -127, 127),
     # )
-    gp.set_sliderX(sliderX.value, 0, 65535, 0, 255)
-    gp.set_sliderY(sliderY.value, 0, 65535, 0, 255)
+    gp.set_sliderX(range_map(sliderX.value, 0, 65535, 0, 255))
+    gp.set_sliderY(range_map(sliderY.value, 0, 65535, 0, 255))
 
-def send_joystick: 
+def send_joystick(): 
     gp.set_digital_joystick(direction_map(~joystick_up.value, 
                                           joystick_down.value, 
                                           joystick_left.value, 
                                           joystick_right.value))
 
-while True:
-    # print("loop")
+# while True:
+#     # print("loop")
+#     send_buttons()
+#     send_toggles()
+#     send_sliders()
+#     send_joystick()
+
+#     time.sleep(1)
+
+def send_widget_states():
     send_buttons()
     send_toggles()
     send_sliders()
     send_joystick()
-
-    time.sleep(1)
-
