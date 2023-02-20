@@ -43,7 +43,25 @@ def direction_map(up, down, left, right):
         return Gamepad.JOYSTICK_EAST
     return Gamepad.JOYSTICK_HOME
 
-def run_test(gp): 
+def test_toggles(gp):
+    print("Turn toggle1 on")
+    gp.toggle_on(1)
+    time.sleep(2)
+    print("Turn toggle2 on")
+    gp.toggle_on(2)
+    time.sleep(2)
+    print("Turn toggle3 on")
+    gp.toggle_on(3)
+    time.sleep(2)
+    print("Turn toggle4 on")
+    gp.toggle_on(4)
+    time.sleep(2)
+    gp.toggle_off(1,2,3,4)
+    time.sleep(3)
+
+
+
+def run_test(gp):
     gp.press_buttons(2)
     print("Turn toggle1 on")
     gp.toggle_on(1)
@@ -56,7 +74,7 @@ def run_test(gp):
     time.sleep(1)
     print("Turn toggle4 on")
     gp.toggle_on(4)
-    time.sleep(1)
+    time.sleep(3)
     gp.toggle_off(1,2,3,4)
 
     print("Set sliderX")
@@ -75,7 +93,7 @@ def run_test(gp):
     gp.set_analog_joystick(Gamepad.JOYSTICK_NORTH)
     time.sleep(1)
     print("Set joystick NW")
-    gp.set_analog_joystick(Gamepad.JOYSTICK_NW) 
+    gp.set_analog_joystick(Gamepad.JOYSTICK_NW)
     time.sleep(1)
     print("Set joystick South")
     gp.set_analog_joystick(Gamepad.JOYSTICK_SOUTH)
@@ -90,7 +108,7 @@ def run_test(gp):
     gp.set_analog_joystick(Gamepad.JOYSTICK_NORTH)
     time.sleep(1)
     print("Set joystick NW")
-    gp.set_analog_joystick(Gamepad.JOYSTICK_NW) 
+    gp.set_analog_joystick(Gamepad.JOYSTICK_NW)
     time.sleep(1)
     print("Set joystick South")
     gp.set_analog_joystick(Gamepad.JOYSTICK_SOUTH)
@@ -98,5 +116,7 @@ def run_test(gp):
 
     print("Set joystick Home")
     gp.set_analog_joystick(Gamepad.JOYSTICK_HOME)
+
+    gp.toggle_off(1,2,3,4)
 
     print("Done with test! =============")

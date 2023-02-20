@@ -156,9 +156,11 @@ class Gamepad:
         self.move_hat(dir)
 
     def move_hat(self, dir):
+        self.set_digital_joystick(dir)
+
+    def set_digital_joystick(self, dir):
         self._hat = self._validate_hat_value(dir)
         self._send()
-
 
     def reset_all(self):
         """Release all buttons and set joysticks to zero."""
@@ -172,7 +174,9 @@ class Gamepad:
 
     def _pack_toggles_and_hat(self):
         ## TODO: Might need to reverse these
-        packed_val = 0
+        print("packing toggles")
+        print(self._toggles_state)
+        packed_val = self._toggles_state
         ## packed_val |= self._toggles_state << 4 ## Toggles are already packed!
         packed_val |= self._hat << 4
         return packed_val
@@ -194,7 +198,7 @@ class Gamepad:
         self._debug_vals(packed_toggles_and_hat)
 
         struct.pack_into(
-            "<bbbb",  ## Little-endian, H: unsigned short (2 bytes), b: signed char (1 byte), B: unsigned char (1 byte)
+            "<BBbB",  ## Little-endian, H: unsigned short (2 bytes), b: signed char (1 byte), B: unsigned char (1 byte)
             self._report, ## Pack into the _report var
             0, ## Offset = 0
             self._joy_x, ## Slider X
@@ -222,7 +226,7 @@ class Gamepad:
     def _validate_toggle_number(value):
         if not 1 <= value <= 4:
             raise ValueError("Toggle value must be in range 1 to 4")
-        return value + 8
+        return value
 
     @staticmethod
     def _validate_joystick_value(value):
