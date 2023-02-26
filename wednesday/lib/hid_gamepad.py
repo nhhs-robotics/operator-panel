@@ -198,7 +198,7 @@ class Gamepad:
         self._debug_vals(packed_toggles_and_hat)
 
         struct.pack_into(
-            "<BBbB",  ## Little-endian, H: unsigned short (2 bytes), b: signed char (1 byte), B: unsigned char (1 byte)
+            "<BBBB",  ## Little-endian, H: unsigned short (2 bytes), b: signed char (1 byte), B: unsigned char (1 byte)
             self._report, ## Pack into the _report var
             0, ## Offset = 0
             self._joy_x, ## Slider X
