@@ -59,6 +59,31 @@ def test_toggles(gp):
     gp.toggle_off(1,2,3,4)
     time.sleep(3)
 
+def test_buttons(gp):
+    print("Testing turning buttons on one by one")
+    gp.press_buttons(1)
+    time.sleep(1)
+    gp.press_buttons(2)
+    time.sleep(1)
+    gp.press_buttons(3)
+    time.sleep(1)
+    gp.press_buttons(4)
+    time.sleep(1)
+    gp.press_buttons(5)
+    time.sleep(1)
+    gp.press_buttons(6)
+    time.sleep(1)
+    gp.press_buttons(7)
+    time.sleep(1)
+    gp.press_buttons(8)
+    time.sleep(1)
+    print("TEST: turn all buttons off")
+    gp.release_buttons(1, 2, 3, 4, 5, 6, 7, 8)
+    time.sleep(1)
+    print("TEST: turn all buttons on at once")
+    gp.press_buttons(1, 2, 3, 4, 5, 6, 7, 8)
+    time.sleep(1)
+
 
 
 def run_test(gp):
@@ -82,7 +107,7 @@ def run_test(gp):
     time.sleep(1)
     gp.set_sliderX(255)
     print("Set sliderY")
-    gp.set_sliderY(0) ## TODO: Getting bigger than 127
+    gp.set_sliderY(0) 
     time.sleep(1)
     gp.set_sliderY(255)
 
@@ -118,5 +143,8 @@ def run_test(gp):
     gp.set_analog_joystick(Gamepad.JOYSTICK_HOME)
 
     gp.toggle_off(1,2,3,4)
+
+    print("Run button tests")
+    test_buttons(gp)
 
     print("Done with test! =============")
